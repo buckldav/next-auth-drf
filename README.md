@@ -33,3 +33,22 @@ Visit the `backend/` directory and follow the `README.md` file there.
 Visit the `frontend/` directory and follow the `README.md` file there.
 
 ### 4. Connect the two together
+
+Here are some instructions catered for those using Google OAuth.
+
+#### Add Social App to Backend
+
+Make sure both your Django and Next.js services are running. Visit [http://127.0.0.1:8000/admin/socialaccount/socialapp/add/](http://127.0.0.1:8000/admin/socialaccount/socialapp/add/) and follow the below picture. You'll be using the same `Client Id` and `Secret Key` that you used to configure your frontend.
+
+![Django Social Auth](/docs/djangoSocialAuth.png)
+
+#### Next.js API Authentication
+
+In the frontend app, install `node-fetch` so that we can use the fetch API in server-side code.
+
+```bash
+cd frontend
+npm install node-fetch
+```
+
+Open `pages/api/auth/[...nextauth].ts`. Replace what's there with
