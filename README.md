@@ -32,13 +32,4 @@ Visit the `backend/` directory and follow the `README.md` file there.
 
 Visit the `frontend/` directory and follow the `README.md` file there.
 
-#### Database
-
-A database is needed to persist user accounts and to support email sign in. However, you can still use NextAuth.js for authentication without a database by using OAuth for authentication. If you do not specify a database, [JSON Web Tokens](https://jwt.io/introduction) will be enabled by default.
-
-You **can** skip configuring a database and come back to it later if you want.
-
-For more information about setting up a database, please check out the following links:
-
-- Docs: [next-auth.js.org/adapters/overview](https://next-auth.js.org/adapters/overview)
-- Adapters Repo: [nextauthjs/adapters](https://github.com/nextauthjs/adapters)
+### 4. Connect the two together
