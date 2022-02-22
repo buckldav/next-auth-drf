@@ -106,4 +106,4 @@ export default NextAuth({
 
 Log in with the frontend, and you should see the your Google Account information be saved in the backend at [http://127.0.0.1:8000/admin/socialaccount/socialaccount/](http://127.0.0.1:8000/admin/socialaccount/socialaccount/).
 
-![Social Register](socialRegister.png)
+![Social Register](/docs/socialRegister.png)
