@@ -16,7 +16,7 @@ Much of this tutorial is adapted from [this medium article by Mahieyin Rahmun](h
 
 > _NextAuth.js is not officially associated with Vercel or Next.js._
 
-## Getting Started
+## Getting Started - Part 1
 
 ### 1. Clone the repository
 
@@ -32,13 +32,78 @@ Visit the `backend/` directory and follow the `README.md` file there.
 
 Visit the `frontend/` directory and follow the `README.md` file there.
 
-#### Database
+### 4. Connect the two together
 
-A database is needed to persist user accounts and to support email sign in. However, you can still use NextAuth.js for authentication without a database by using OAuth for authentication. If you do not specify a database, [JSON Web Tokens](https://jwt.io/introduction) will be enabled by default.
+Here are some instructions catered for those using Google OAuth.
 
-You **can** skip configuring a database and come back to it later if you want.
+#### Add Social App to Backend
 
-For more information about setting up a database, please check out the following links:
+Make sure both your Django and Next.js services are running. Visit [http://127.0.0.1:8000/admin/socialaccount/socialapp/add/](http://127.0.0.1:8000/admin/socialaccount/socialapp/add/) and follow the below picture. You'll be using the same `Client Id` and `Secret Key` that you used to configure your frontend.
 
-- Docs: [next-auth.js.org/adapters/overview](https://next-auth.js.org/adapters/overview)
-- Adapters Repo: [nextauthjs/adapters](https://github.com/nextauthjs/adapters)
+![Django Social Auth](/docs/djangoSocialAuth.png)
+
+#### Next.js API Authentication
+
+In the frontend app, install `node-fetch` so that we can use the fetch API in server-side code.
+
+```bash
+cd frontend
+npm install node-fetch
+```
+
+Open `pages/api/auth/[...nextauth].ts`. Replace what's there with the following:
+
+```tsx
+import NextAuth from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import fetch from "node-fetch";
+import { AuthenticatedUser, DjangoSocialRes } from "../../../types";
+
+export default NextAuth({
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_SECRET,
+    }),
+  ],
+  callbacks: {
+    async jwt({ token }) {
+      token.userRole = "admin";
+      return token;
+    },
+    async signIn({ user, account, profile }) {
+      if (account.provider === "google") {
+        // extract these two tokens
+        const { access_token, id_token } = account;
+        // make a POST request to the DRF backend
+        try {
+          const response = await fetch(
+            "http://127.0.0.1:8000/api/social/login/google/",
+            {
+              method: "POST",
+              body: JSON.stringify({
+                access_token,
+                id_token,
+              }),
+              headers: { "Content-Type": "application/json" },
+            }
+          );
+
+          const json = (await response.json()) as DjangoSocialRes;
+          // store an access token with the user on the frontend
+          (user as AuthenticatedUser).accessToken = json.access_token;
+
+          return true;
+        } catch (error) {
+          return false;
+        }
+      }
+      return false;
+    },
+  },
+});
+```
+
+Log in with the frontend, and you should see the your Google Account information be saved in the backend at [http://127.0.0.1:8000/admin/socialaccount/socialaccount/](http://127.0.0.1:8000/admin/socialaccount/socialaccount/).
+
+![Social Register](socialRegister.png)

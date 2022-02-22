@@ -29,21 +29,22 @@ A list of configured providers and their callback URLs is available from the end
 
 3. You can also choose to specify an SMTP server for passwordless sign in via email.
 
+#### Setup Google OAuth
+
+Head over to the [Google Developer Console](https://console.cloud.google.com/), create a new project and generate an OAuth Client ID (namely, CLIENT_ID and CLIENT_SECRET). You may have to add a few test users while in development phase as per Google’s new policies.
+
+![Google OAuth Create](/docs/googleOAuth.png)
+
+Store the CLIENT_ID and CLIENT_SECRET in the .env.local file.
+
 ### 4. Start the application
 
 To run your site locally, use:
 
-```
-
+```bash
 npm run dev
-
 ```
 
-To run it in production mode, use:
+At this point, the frontend and backend are not connected, but you can try running the frontend and logging in. With no backend configured, you can still log in with JSON Web Tokens (JWTs).
 
-```
-
-npm run build
-npm run start
-
-```
+[Session vs. Token Authentication](https://www.youtube.com/watch?v=UBUNrFtufWo)
